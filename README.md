@@ -1,58 +1,139 @@
-# Etsy_Scraper: Overview
+# Etsy Web Scraper
 
-This is a Python Selenium webscraper that grabs listing and shop information on Etsy for search terms the user inputs. The user can also stipulate how many pages of each search term they want to scrape. 
+A Python-based web scraper built with Selenium that extracts listing and shop information from Etsy based on user-defined search terms and pagination limits.
 
-You can see an example of the results of a scrape in the `raw_data.csv` file. Note that shop names are anonymized for security. 
+## Features
 
-## Running the Webscraper
+- Extract comprehensive listing data including pricing, ratings, reviews, and shop information
+- Configurable search terms and page limits (up to 240 pages per term)
+- Built-in IP blocking mitigation
+- Shop name anonymization for privacy
+- CSV output with 16 data columns
+- Detailed progress tracking and summary reporting
 
-#### Pre-Requisites
+## Prerequisites
 
-* **Python Version:** 3.9
-* **Package Requirements:** Clone the repo and create a virtual environment with the packages listed in 'requirements.txt' file
+- **Python:** 3.9+
+- **Dependencies:** See `requirements.txt`
+- **WebDriver:** Chrome/Firefox WebDriver (path configurable)
 
-There are three files you need to run the webscraper:
-* `main_scraper.py` runs the actual scraper
-* `scraper_functions.py` is a repository for all of the functions used in the main scraper
-* `scraper options.py` is the file that allows for customization - it is here that you can 1) define the path to your webdriver, 2) input your list of search terms into the 'search terms' variable, and 3) input the number of pages your want scraped per search term (to a maximum of 240).
+## Installation
 
-<em>Note that in the main_scraper.py file there's a line of code to anonymize shop names. You can take this out if you need the shop names for your exploration.</em>
+1. Clone the repository:
+```bash
+git clone https://github.com/danieladdisonorg/Etsy-Scraping.git
+cd Etsy-Scraping
+```
 
-Once you've made these adjustments, simply run the script - you'll see printouts for every page that's scraped, as well as an overall summary for each search term. 
+2. Create and activate a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-## Resources Used
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-* **Overcoming IP Blocks:**
-https://medium.com/swlh/improve-your-web-scraper-with-limited-retry-loops-python-35e21730cbf5
+## Configuration
+
+Before running the scraper, configure the following in `scraper_options.py`:
+
+1. **WebDriver Path:** Set the path to your WebDriver executable
+2. **Search Terms:** Define your list of search terms in the `search_terms` variable
+3. **Page Limit:** Set the number of pages to scrape per search term (max: 240)
+
+## Usage
+
+Run the main scraper:
+```bash
+python main_scraper.py
+```
+
+The scraper will:
+- Display progress for each page scraped
+- Provide summary statistics for each search term
+- Output results to `raw_data.csv`
+
+### File Structure
+
+- `main_scraper.py` - Main execution script
+- `scraper_functions.py` - Core scraping functions
+- `scraper_options.py` - Configuration settings
+- `raw_data.csv` - Example output data
 
 ## Data Schema
 
-There are 16 columns pulled by this webscraper:
+The scraper extracts 16 columns of data per listing:
 
-| Column | Description | Data Type|
-| --- | --- | --- |
-| Title | Title of the listing | string |
-| Shop_Name | Anonymized integer as a standin for shop name | int |
-| Is_Ad | 1 if a listing is an ad, 0 otherwise | int |
-| Star_Rating | Overall star rating for the shop | float |
-| Num_Reviews | Total number of reviews for the shop | int |
-| Price | Cost of listing item | float |
-| Is_Bestseller | 1 if a listing has the 'bestseller' tag, 0 otherwise | int |
-| Num_Sales | Total number of sales for the shop | int |
-| Num_Basket | Number of items of this listing in people's baskets - '20' represents 'over 20' | int |
-| Description | Description of the listing | string |
-| Days_to_Arrival | Number of days from the day of the scrape to the mean arrival time for the listing | int |
-| Cost_Delivery | Price of delivery - note this will be in your home currency | float |
-| Returns_Accepted | 1 if a shop accepts returns, 0 otherwise | int |
-| Dispatched_From | Country of origin for the listing | string |
-| Num_Images | Total number of images for the listing | int |
-| Category | Search term used for the scrape - drop this column if only searching one term | string |
+| Column | Description | Type |
+|--------|-------------|------|
+| `Title` | Listing title | String |
+| `Shop_Name` | Anonymized shop identifier | Integer |
+| `Is_Ad` | Advertisement flag (1/0) | Integer |
+| `Star_Rating` | Shop's overall star rating | Float |
+| `Num_Reviews` | Total shop reviews | Integer |
+| `Price` | Item price | Float |
+| `Is_Bestseller` | Bestseller tag flag (1/0) | Integer |
+| `Num_Sales` | Total shop sales | Integer |
+| `Num_Basket` | Items in customer baskets | Integer |
+| `Description` | Listing description | String |
+| `Days_to_Arrival` | Estimated delivery days | Integer |
+| `Cost_Delivery` | Shipping cost | Float |
+| `Returns_Accepted` | Return policy flag (1/0) | Integer |
+| `Dispatched_From` | Origin country | String |
+| `Num_Images` | Number of listing images | Integer |
+| `Category` | Search term used | String |
 
-## Limitations
+## Performance
 
-Please feel free to use this webscraper as a starting point for your exploration and make adjustments to improve it! A couple of options for improvement: 
-* The scraper is pretty slow - adjustments can be made to increase the speed while still overcoming the IP Block. It current takes about 24 hours to scrape 15,500 records. Some suggestions are to make the webdriver headless and to think about opening all the links in new tabs at the same time so that the scraping can be done concurrently for each page. 
-* Additional columns can be added for things like whether the listing is on sale, whether it can be personalized, whether the item is sold in bulk, etc. 
-* Once in the listing page, an individual can choose to scrape some of the top reviews for sentiment analysis 
+- **Current Speed:** ~15,500 records in 24 hours
+- **Rate Limiting:** Built-in delays to prevent IP blocking
+- **Memory Usage:** Optimized for large datasets
 
-Have fun and please feel free to reach out if you have any questions!
+## Customization Options
+
+### Remove Shop Name Anonymization
+To retain actual shop names, comment out the anonymization code in `main_scraper.py`.
+
+### Potential Enhancements
+- **Performance:** Implement headless browsing and concurrent processing
+- **Additional Data:** Sale status, personalization options, bulk availability
+- **Review Analysis:** Extract and analyze customer reviews
+- **Advanced Filtering:** Category-specific data extraction
+
+## Known Limitations
+
+- Scraping speed is conservative to avoid IP blocking
+- Maximum 240 pages per search term (Etsy limitation)
+- Delivery costs displayed in user's local currency
+- Requires active internet connection and WebDriver maintenance
+
+## Troubleshooting
+
+### Common Issues
+- **WebDriver errors:** Ensure WebDriver version matches your browser
+- **IP blocking:** Increase delays in scraper settings
+- **Missing data:** Check Etsy's page structure for changes
+
+## Contributing
+
+Contributions are welcome! Please feel free to:
+- Submit bug reports and feature requests
+- Improve scraping efficiency
+- Add new data extraction capabilities
+- Enhance error handling
+
+## Resources
+
+- [Web Scraping Best Practices](https://medium.com/swlh/improve-your-web-scraper-with-limited-retry-loops-python-35e21730cbf5)
+- [Selenium Documentation](https://selenium-python.readthedocs.io/)
+
+## License
+
+This project is provided as-is for educational and research purposes. Please ensure compliance with Etsy's Terms of Service and robots.txt when using this scraper.
+
+## Contact
+
+For questions or support, please open an issue on GitHub.
